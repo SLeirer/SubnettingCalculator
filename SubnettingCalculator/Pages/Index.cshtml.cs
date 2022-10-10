@@ -25,10 +25,14 @@ namespace SubnettingCalculator.Pages
         public string NetID { get; set; }
         public string Message { get; set; }
 
+
+
         [BindProperty]
         public string NetIdEingabe { get; set; }
         [BindProperty]
         public string NetzAnteilEingabe { get; set; }
+
+
         public void OnGet()
         {
             
@@ -166,7 +170,7 @@ namespace SubnettingCalculator.Pages
             if(NetzAnteilEingabe == "0")
             {
                 Message = "Subnet 0 existiert nicht";
-                    return false;
+                return false;
             }
 
             string[] netIdBloecke = NetIdEingabe.Split('.');
@@ -205,7 +209,7 @@ namespace SubnettingCalculator.Pages
             if (!(int.TryParse(NetzAnteilEingabe, out netzAnteilInt)))
             {
                 //catches if mask bits cannot be parsed into int aka not having a valid input
-                Message = "netzAnteil beinhaltet etwas anderes wie zahlen";
+                Message = "netzAnteil beinhaltet etwas anderes als zahlen";
                 return false;
             }
             if (!(netzAnteilInt >= 0 && netzAnteilInt <= 32))
@@ -213,6 +217,28 @@ namespace SubnettingCalculator.Pages
                 //checks if the range of maks bits is correct
                 Message = "netzanteil ist nicht in der richtigen range";
                 return false;
+            }
+
+            //CHECK IF NETID AND SUBNET FIT TOGETHER DEPENDING OF NUMBER OF HOSTS
+            //irgendwas ist hier noch nicht richtig
+            int localHostBits = 32 - Convert.ToInt32(NetzAnteilEingabe);
+            int anzahlAchterBloecke = localHostBits / 8;
+            if(anzahlAchterBloecke > 0)
+            {
+                localHostBits = localHostBits - anzahlAchterBloecke * 8;
+            }
+            if (netIdBloackeInteger[3-anzahlAchterBloecke] > Math.Pow(2, localHostBits))
+            {
+                Message = "Nicht genügend IP's für diesese subnetzt";
+                return false;
+            }
+            for(int i = 0; i < anzahlAchterBloecke; i++)
+            {
+                if (netIdBloackeInteger[3 - anzahlAchterBloecke] == Math.Pow(2, localHostBits) && netIdBloackeInteger[3-i] > 0)
+                {
+                    Message = "Nicht genügend IP's für diesese subnetzt";
+                    return false;
+                }
             }
 
 
