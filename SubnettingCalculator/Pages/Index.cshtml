@@ -1,0 +1,54 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-start" label="butts">
+    <p>Gebe die NetId und Das subnetz ein</p>
+    <form method="post">
+        <input type="text" class="NetIDInput" placeholder="NetID" asp-for="NetIdEingabe"> /
+        <input type="text" class="SubnetInput" placeholder="NetzAnteil(bits)" asp-for="NetzAnteilEingabe">
+        <button class="btn_submit" type="submit">Update</button>
+    </form>
+    <p>@Model.Message</p>
+    @*<h1 class="display-4">@Model.MyProperty</h1>*@
+    @*<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
+</div>
+<br>
+<hr>
+
+<div class="text-start" label="butts2">
+    <table class="table table-success table-striped">
+        <tHead>
+            <tr>
+                <th scope="col">Subnetzmaske</th>
+                <th scope="col">NetID</th>
+                <th scope="col">Erster host</th>
+                <th scope="col">Letzter Host</th>
+                <th scope="col">Broadcast</th>
+                <th scope="col">Anzahl hosts</th>
+                <th scope="col">NetzAnteil(bit)</th>
+                <th scope="col">Netz teilen</th>
+            </tr>
+        </tHead>
+        <tbody>
+            <tr>
+                <td>@Model.SubnetzMaske</td>
+                <td>@Model.NetID</td>
+                <td>@Model.ErsterHost</td>
+                <td>@Model.LetzterHost</td>
+                <td>@Model.Broadcast</td>
+                <td>@Model.AnzahlHosts</td>
+                <td>@Model.NetzAnteil</td>
+                <td>
+                    <button class="btn_submit" type="submit">Teilen</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@{
+    List<int> list = new();
+}
