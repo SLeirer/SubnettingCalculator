@@ -43,8 +43,13 @@ namespace SubnettingCalculator.Pages
             NetID = NetIdEingabe;
             NetzAnteil = NetzAnteilEingabe;
             SubnetzMaske = evaluateSubnetmask(NetzAnteil);
-            ErsterHost = evaluateFirstHost(NetID);
+            ErsterHost = evaluateFirstHost(NetID, NetzAnteil);
             AnzahlHosts = (Math.Pow(2, 32 - Convert.ToInt32(NetzAnteil))-2).ToString();
+            if(Convert.ToInt32(AnzahlHosts) < 2)
+            {
+                AnzahlHosts = (Convert.ToInt32(AnzahlHosts) + 2).ToString();
+            }
+
             Broadcast = evaluateBroadcast(NetzAnteil, NetIdEingabe);
 
         }
@@ -52,6 +57,18 @@ namespace SubnettingCalculator.Pages
         public string evaluateBroadcast(string NetzAnteil, string NetID)
         {
             string broadcastStr = "";
+            if (NetzAnteil == "32")
+            {
+                return NetID;
+            }
+            if(NetzAnteil == "31")
+            {
+                broadcastStr = NetID.Substring(NetID.LastIndexOf('.')+1);
+                broadcastStr = (Convert.ToInt32(broadcastStr) + 1).ToString();
+                broadcastStr = NetID.Substring(0, NetID.LastIndexOf('.')+1) + broadcastStr;
+                return broadcastStr;
+            }
+            
             int hostanteile = 32 - Convert.ToInt32(NetzAnteil);
             int ganzeAchterblocks = hostanteile / 8;
             int temp = 1;
@@ -59,7 +76,9 @@ namespace SubnettingCalculator.Pages
             string[] netIDblocks = NetID.Split('.');
             int[] netIDblocksInt = new int[4];
 
-            for(int i=3; i>0; i--)
+          
+
+            for (int i=0; i<netIDblocks.Length; i++)
             {
                 netIDblocksInt[i] = Convert.ToInt32(netIDblocks[i]);
             }
@@ -71,15 +90,27 @@ namespace SubnettingCalculator.Pages
                 temp = temp * 2;
             }
 
-            //Message = hostanteile.ToString();
+            for(int i = 0; i < ganzeAchterblocks; i++)
+            {
+                netIDblocksInt[3 - i] = 255;
+            }
             
+            netIDblocksInt[3 - ganzeAchterblocks] = netIDblocksInt[3 - ganzeAchterblocks] + erg;
 
-
+            foreach(int block in netIDblocksInt)
+            {
+                broadcastStr += block.ToString() + ".";
+            }
+            broadcastStr = broadcastStr.Substring(0, broadcastStr.Length-1);
 
             return broadcastStr;
         }
-        public string evaluateFirstHost(string NetID)
+        public string evaluateFirstHost(string NetID, string NetzAnteil)
         {
+            if(NetzAnteil == "31" || NetzAnteil == "32")
+            {
+                return NetID;
+            }
             string firstHost = "";
             string NetIDlastBlock = NetID.Substring(NetID.LastIndexOf('.')+1);
             int temp = Convert.ToInt32(NetIDlastBlock);
@@ -116,6 +147,10 @@ namespace SubnettingCalculator.Pages
             }
 
             subnetzmaske = subnetzmaske.Substring(0, subnetzmaske.Length-1);
+            if(subnetzmaske.Length > 15)
+            {
+                subnetzmaske = subnetzmaske.Substring(0, 15);
+            }
 
 
             return subnetzmaske;
@@ -126,6 +161,12 @@ namespace SubnettingCalculator.Pages
             {
                 Message = "NetID feld ist leer";
                 return false;
+            }
+            
+            if(NetzAnteilEingabe == "0")
+            {
+                Message = "Subnet 0 existiert nicht";
+                    return false;
             }
 
             string[] netIdBloecke = NetIdEingabe.Split('.');
