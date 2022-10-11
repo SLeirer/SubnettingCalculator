@@ -12,8 +12,6 @@
         <button class="btn_submit" type="submit">Update</button>
     </form>
     <p>@Model.Message</p>
-    @*<h1 class="display-4">@Model.MyProperty</h1>*@
-    @*<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
 </div>
 <br>
 <hr>
@@ -33,22 +31,20 @@
             </tr>
         </tHead>
         <tbody>
-            <tr>
-                <td>@Model.SubnetzMaske</td>
-                <td>@Model.NetID</td>
-                <td>@Model.ErsterHost</td>
-                <td>@Model.LetzterHost</td>
-                <td>@Model.Broadcast</td>
-                <td>@Model.AnzahlHosts</td>
-                <td>@Model.NetzAnteil</td>
-                <td>
-                    <button class="btn_submit" type="submit">Teilen</button>
-                </td>
-            </tr>
+            @for(int i = 0; i<@Model.subnetzliste.Count(); i++){
+                <tr>
+                    <td>@Model.subnetzliste[i].SubnetzMaske</td>
+                    <td>@Model.subnetzliste[i].NetID</td>
+                    <td>@Model.subnetzliste[i].ErsterHost</td>
+                    <td>@Model.subnetzliste[i].LetzterHost</td>
+                    <td>@Model.subnetzliste[i].Broadcast</td>
+                    <td>@Model.subnetzliste[i].AnzahlHosts</td>
+                    <td>@Model.subnetzliste[i].NetzAnteil</td>
+                    <td>
+                        <button class="btn_submit" type="submit" label="butts" id = i>Teilen</button>
+                    </td>
+                </tr>
+            } 
         </tbody>
     </table>
 </div>
-
-@{
-    List<int> list = new();
-}
