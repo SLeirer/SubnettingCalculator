@@ -90,6 +90,16 @@ namespace SubnettingCalculator.Pages
                 }
             }
 
+            //abfangen von ungraden NetIDs
+            if (!(netIdBloackeInteger[netIdBloackeInteger.Length-1] == 255 && NetzAnteilEingabe == "32"))
+            {
+                if (netIdBloackeInteger[netIdBloackeInteger.Length-1]%2 != 0)
+                {
+                    Message = "NetID darf nicht ungerade enden";
+                    return false;
+                }
+            }
+
             //EVALUATION OF MASKINGBITS
             if (!(int.TryParse(NetzAnteilEingabe, out netzAnteilInt)))
             {
