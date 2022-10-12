@@ -16,16 +16,22 @@ namespace SubnettingCalculator.Pages
         {
             _logger = logger;
         }
-        public string Message { get; set; }
 
+        //VARIABLEN
+        
+        //Message Variable zur fehler rückmeldung an den nutzer
+        public string Message { get; set; }
+        //Objekt hinterlegung der subnetze in einer Liste um diese leicht in die HTML Tabelle übernehmen zu können
         public List<SubnetzObject> subnetzliste = new List<SubnetzObject>();
 
+        //Eingabe variablen bindproperty ermöglicht die einbidung von html form daten an c# variablen
         [BindProperty]
         public string NetIdEingabe { get; set; }
         [BindProperty]
         public string NetzAnteilEingabe { get; set; }
 
 
+        //FUNKTIONEN
         public void OnGet()
         {
             
@@ -33,55 +39,55 @@ namespace SubnettingCalculator.Pages
 
         public void OnPost()
         {
-            if (!isValidInput(NetIdEingabe, NetzAnteilEingabe))
+            //Ausführung des "Eingabe" buttons
+            if (isValidInput(NetIdEingabe, NetzAnteilEingabe))
             {
-                return;
+                //prüfung ob es sich bei der eingabe um valide werte handelt andererseits erfolgt keine ausführung
+                //fehler rückmeldung erfolgt über die isValidInput Funktion
+                SubnetzObject erstesSubnetz = new();
+                erstesSubnetz.initializeSubnet(NetIdEingabe, NetzAnteilEingabe);
+                subnetzliste.Add(erstesSubnetz);
             }
-            SubnetzObject erstesSubnetz = new();
-            erstesSubnetz.initializeSubnet(NetIdEingabe, NetzAnteilEingabe);
-            subnetzliste.Add(erstesSubnetz);
-            subnetzliste.Add(erstesSubnetz);
-            subnetzliste.Add(erstesSubnetz);
-            subnetzliste.Add(erstesSubnetz);
         }
         public Boolean isValidInput(string NetIdEingabe, string NetzAnteilEingabe)
         {
-            if(NetIdEingabe == null)
+            //erstprüfung ob die werte tatsächlich inhalt haben
+            //dies muss zuerst stattfinden da eine handhabung von leeren werten eine mögliche exception verursachen kann
+            if(NetIdEingabe == null || NetzAnteilEingabe == null)
             {
-                Message = "NetID feld ist leer";
-                return false;
-            }
-            
-            if(NetzAnteilEingabe == "0")
-            {
-                Message = "Subnet 0 existiert nicht";
+                Message = "Ein feld ist leer";
                 return false;
             }
 
+            //Variablen dekleration
+            //netID wird am "." in ein array gesplittet und später dafür genutzt zu schauen ob die richtige anzahl von blöcken existiert
             string[] netIdBloecke = NetIdEingabe.Split('.');
             int[] netIdBloackeInteger = new int[netIdBloecke.Length];
             int netzAnteilInt = 0;
             Regex regex = new Regex(@"[\d]");
 
-            
-            //EVALUATION OF NETID
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //!!!   NETID PRÜFUNGEN        !!!
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //Prüfung ob NetID aus vier blöcken besteht, da eine abweichung davon nicht zulässig ist
             if (netIdBloecke.Length != 4)
             {
-                //catches if number of blocks in the netID are not correct
                 Message = "Falsche anzahl an Blöcken";
                 return false;
             }
-            foreach(string block in netIdBloecke)
+
+            //Prüfung das die NetID blöcke nur zahlen beinhalten
+            foreach (string block in netIdBloecke)
             {
-                //checks if netID blocks only contain numbers
                 if (!regex.IsMatch(block)){
                     Message = "In einem Block sind steht etwas anderes wie zahlen";
                     return false;
                 }
             }
+
+            //Prüft den zulässigen wertebereich der einzelnen NetID blöcke
             for (int i = 0; i < netIdBloecke.Length; i++)
             {
-                //Checks if the range of netID blocks is correct
                 netIdBloackeInteger[i] = Convert.ToInt32(netIdBloecke[i]);
                 if(!(netIdBloackeInteger[i] >= 0 && netIdBloackeInteger[i] <= 255))
                 {
@@ -100,22 +106,26 @@ namespace SubnettingCalculator.Pages
                 }
             }
 
-            //EVALUATION OF MASKINGBITS
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //!!!   Slash-notations PRÜFUNGEN   !!!
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //Prüfung ob der netzanteil unerlaubte zeichen beinhaltet
             if (!(int.TryParse(NetzAnteilEingabe, out netzAnteilInt)))
             {
-                //catches if mask bits cannot be parsed into int aka not having a valid input
                 Message = "netzAnteil beinhaltet etwas anderes als zahlen";
                 return false;
             }
-            if (!(netzAnteilInt >= 0 && netzAnteilInt <= 32))
+
+            //Prüfung das der netzanteil sich in einem erlaubten wertebereich befindet
+            if (!(netzAnteilInt > 0 && netzAnteilInt <= 32))
             {
-                //checks if the range of maks bits is correct
-                Message = "netzanteil ist nicht in der richtigen range";
+                Message = "netzanteil ist nicht in der richtigen range (1-32)";
                 return false;
             }
 
-            //CHECK IF NETID AND SUBNET FIT TOGETHER DEPENDING OF NUMBER OF HOSTS
-            //irgendwas ist hier noch nicht richtig
+            //Compatibilitätsprüfung der NetID mit der slash-notation
+            //prüft für wieviele IP's die NetID platzt hat, und über wieviele hosts die slash-notation verfügt.
+            //vergleicht diese ob genug platzt für die anzahl der hosts überhaupt existiert.
             double hosts = Math.Pow(2, 32 - Convert.ToInt32(NetzAnteilEingabe));
             double hostPlatzImSubnetz = 1;
             for(int i = 0; i < netIdBloackeInteger.Length; i++)
@@ -127,7 +137,6 @@ namespace SubnettingCalculator.Pages
                 Message = "netID hat nicht genügend hosts für dieses subnetz";
                 return false;
             }
-
 
             return true;
         }
