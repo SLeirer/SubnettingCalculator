@@ -12,7 +12,6 @@ namespace SubnettingCalculator.Pages
         public string AnzahlHosts { get; set; }
         public string NetzAnteil { get; set; }
         public string NetID { get; set; }
-        public string Message { get; set; }
 
         public SubnetzObject()
         {
@@ -23,7 +22,6 @@ namespace SubnettingCalculator.Pages
             this.AnzahlHosts = "";
             this.NetzAnteil = "";
             this.NetID = "";
-            this.Message = "";
         }
 
         public string evaluatelastHost(string broadcast, string NetzAnteil)
@@ -222,6 +220,20 @@ namespace SubnettingCalculator.Pages
 
             return subnetzmaske;
         }
+
+        public void evaluateNumHosts()
+        {
+            //anzahl hosts = 2^hostbits
+            //hostbits = 32 - NetzAnteilDerBits (32 in diesem fall ist die volle länge einer IP)
+            this.AnzahlHosts = (Math.Pow(2, 32 - Convert.ToInt32(this.NetzAnteil)) - 2).ToString();
+            if (Convert.ToInt32(this.AnzahlHosts) < 2)
+            {
+                //in dem fall das weniger wie 2 rauskommt handelt es sich um spezielle fälle
+                //im 31 u. 32 netzt werden jeweils der Broadcast und/oder die netID mitgezählt
+                //weshalb man das ergebnis in diesen fällen einfach um 2 erhöhen kann
+                this.AnzahlHosts = (Convert.ToInt32(this.AnzahlHosts) + 2).ToString();
+            }
+        }
         public void initializeSubnet(string netIDEingabe, string netzAnteilEingabe)
         {
             //das object ist bei der erstellung leer
@@ -232,11 +244,7 @@ namespace SubnettingCalculator.Pages
             this.NetzAnteil = netzAnteilEingabe;
 
             //der rest der werte wird anhand der eingabe berechnet
-            this.AnzahlHosts = (Math.Pow(2, 32 - Convert.ToInt32(this.NetzAnteil)) - 2).ToString();
-            if (Convert.ToInt32(this.AnzahlHosts) < 2)
-            {
-                this.AnzahlHosts = (Convert.ToInt32(this.AnzahlHosts) + 2).ToString();
-            }
+            evaluateNumHosts();
             this.SubnetzMaske = evaluateSubnetmask(this.NetzAnteil);
             this.ErsterHost = evaluateFirstHost(this.NetID, this.NetzAnteil);
             this.Broadcast = evaluateBroadcast(this.NetzAnteil, this.NetID);

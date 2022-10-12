@@ -21,10 +21,12 @@ namespace SubnettingCalculator.Pages
         
         //Message Variable zur fehler rückmeldung an den nutzer
         public string Message { get; set; }
-        //Objekt hinterlegung der subnetze in einer Liste um diese leicht in die HTML Tabelle übernehmen zu können
+        //Objekt hinterlegung der subnetze in einer Liste
+        //um diese leicht in die HTML Tabelle übernehmen zu können
         public List<SubnetzObject> subnetzliste = new List<SubnetzObject>();
 
-        //Eingabe variablen bindproperty ermöglicht die einbidung von html form daten an c# variablen
+        //Eingabe variablen
+        //bindproperty ermöglicht die einbidung von html form daten an c# variablen
         [BindProperty]
         public string NetIdEingabe { get; set; }
         [BindProperty]
@@ -124,13 +126,15 @@ namespace SubnettingCalculator.Pages
             }
 
             //Compatibilitätsprüfung der NetID mit der slash-notation
-            //prüft für wieviele IP's die NetID platzt hat, und über wieviele hosts die slash-notation verfügt.
+            //prüft für wieviele IP's die NetID platzt hat
+            //Prüft über wieviele hosts die slash-notation verfügt.
             //vergleicht diese ob genug platzt für die anzahl der hosts überhaupt existiert.
             double hosts = Math.Pow(2, 32 - Convert.ToInt32(NetzAnteilEingabe));
             double hostPlatzImSubnetz = 1;
             for(int i = 0; i < netIdBloackeInteger.Length; i++)
             {
-                hostPlatzImSubnetz = hostPlatzImSubnetz + (255-netIdBloackeInteger[i])*(Math.Pow(255, 3-i));
+                hostPlatzImSubnetz = hostPlatzImSubnetz
+                    + (255-netIdBloackeInteger[i])*(Math.Pow(255, 3-i));
             }
             if(hosts > hostPlatzImSubnetz)
             {
