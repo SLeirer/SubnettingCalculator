@@ -31,17 +31,19 @@
             </tr>
         </tHead>
         <tbody>
-            @for(int i = 0; i<@Model.subnetzliste.Count(); i++){
+            @for(int i = 0; i<@Model.getList().Count; i++){
                 <tr>
-                    <td>@Model.subnetzliste[i].SubnetzMaske</td>
-                    <td>@Model.subnetzliste[i].NetID</td>
-                    <td>@Model.subnetzliste[i].ErsterHost</td>
-                    <td>@Model.subnetzliste[i].LetzterHost</td>
-                    <td>@Model.subnetzliste[i].Broadcast</td>
-                    <td>@Model.subnetzliste[i].AnzahlHosts</td>
-                    <td>@Model.subnetzliste[i].NetzAnteil</td>
+                    <td>@Model.getList()[i].SubnetzMaske</td>
+                    <td>@Model.getList()[i].NetID</td>
+                    <td>@Model.getList()[i].ErsterHost</td>
+                    <td>@Model.getList()[i].LetzterHost</td>
+                    <td>@Model.getList()[i].Broadcast</td>
+                    <td>@Model.getList()[i].AnzahlHosts</td>
+                    <td>@Model.getList()[i].NetzAnteil</td>
                     <td>
-                        <button class="btn_submit" type="submit" label="butts" id = i>Teilen</button>
+                        <form asp-page-handler="TeilenButtons" method="post" asp-route-splitOn="@i">
+                            <button value="@i" type="submit">Teilen</button>
+                        </form>
                     </td>
                 </tr>
             } 

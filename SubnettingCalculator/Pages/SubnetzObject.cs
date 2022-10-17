@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks.Dataflow;
 
 namespace SubnettingCalculator.Pages
@@ -24,6 +26,46 @@ namespace SubnettingCalculator.Pages
             this.NetID = "";
         }
 
+        public List<SubnetzObject> splitSubnet()
+        {
+            List<SubnetzObject> splitList = new List<SubnetzObject>();
+            SubnetzObject tempSubnetobject = new();
+            string netzanteilNew = (int.Parse(this.NetzAnteil) + 1).ToString();
+            tempSubnetobject.initializeSubnet(this.NetID, netzanteilNew);
+            splitList.Add(tempSubnetobject);
+            //tempSubnetobject = null;
+            string[] broadcastSplit = splitList[0].Broadcast.Split('.');
+            int[] broadcastSplitInt = new int[broadcastSplit.Length];
+
+            for(int i = 0; i < broadcastSplit.Length; i++)
+            {
+                broadcastSplitInt[i] = Convert.ToInt32(broadcastSplit[i]);
+            }
+
+            for(int i = 0; i < broadcastSplitInt.Length; i++)
+            {
+                if (broadcastSplitInt[3-i] < 255)
+                {
+                    broadcastSplitInt[3 - i] += 1;
+                }
+                else
+                {
+                    broadcastSplitInt[3 - i] = 0;
+                }
+            }
+
+            string netIdNew = "";
+            foreach(int block in broadcastSplitInt)
+            {
+                netIdNew += block.ToString() + ".";
+            }
+            netIdNew = netIdNew.Substring(0, netIdNew.Length - 1);
+            tempSubnetobject.initializeSubnet(netIdNew, netzanteilNew);
+            splitList.Add(tempSubnetobject);
+            Debug.WriteLine("splitlist in der methode: " + splitList.Count);
+            return splitList;
+
+        }
         public string evaluatelastHost(string broadcast, string NetzAnteil)
         {
             //Ausnahmefälle für slash-notation 31 u. 32
@@ -225,7 +267,9 @@ namespace SubnettingCalculator.Pages
         {
             //anzahl hosts = 2^hostbits
             //hostbits = 32 - NetzAnteilDerBits (32 in diesem fall ist die volle länge einer IP)
+            Debug.WriteLine("netzAnteil : " + this.NetzAnteil);
             this.AnzahlHosts = (Math.Pow(2, 32 - Convert.ToInt32(this.NetzAnteil)) - 2).ToString();
+            Debug.WriteLine("hostanzhal : " + this.AnzahlHosts);
             if (Convert.ToInt32(this.AnzahlHosts) < 2)
             {
                 //in dem fall das weniger wie 2 rauskommt handelt es sich um spezielle fälle

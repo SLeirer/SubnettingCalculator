@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using static System.Formats.Asn1.AsnWriter;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Diagnostics;
 
 namespace SubnettingCalculator.Pages
 {
@@ -23,7 +24,7 @@ namespace SubnettingCalculator.Pages
         public string Message { get; set; }
         //Objekt hinterlegung der subnetze in einer Liste
         //um diese leicht in die HTML Tabelle übernehmen zu können
-        public List<SubnetzObject> subnetzliste = new List<SubnetzObject>();
+        public static List<SubnetzObject> subnetzliste = new List<SubnetzObject>();
 
         //Eingabe variablen
         //bindproperty ermöglicht die einbidung von html form daten an c# variablen
@@ -32,11 +33,28 @@ namespace SubnettingCalculator.Pages
         [BindProperty]
         public string NetzAnteilEingabe { get; set; }
 
-
         //FUNKTIONEN
         public void OnGet()
         {
             
+        }
+        
+        public List<SubnetzObject> getList()
+        {
+            return subnetzliste;
+        }
+
+        public void OnPostTeilenButtons(int splitOn)
+        {
+            Debug.WriteLine(subnetzliste.Count);
+            Debug.WriteLine(splitOn);
+            List<SubnetzObject> splitList = subnetzliste[splitOn].splitSubnet();
+            subnetzliste.RemoveAt(splitOn);
+            for(int i = 0; i < splitList.Count; i++)
+            {
+                subnetzliste.Insert(splitOn + i, splitList[i]);
+            }
+            //OnPost();
         }
 
         public void OnPost()
@@ -49,8 +67,21 @@ namespace SubnettingCalculator.Pages
                 SubnetzObject erstesSubnetz = new();
                 erstesSubnetz.initializeSubnet(NetIdEingabe, NetzAnteilEingabe);
                 subnetzliste.Add(erstesSubnetz);
+                subnetzliste.Add(erstesSubnetz);
+                subnetzliste.Add(erstesSubnetz);
+                subnetzliste.Add(erstesSubnetz);
+                subnetzliste.Add(erstesSubnetz);
+                subnetzliste.Add(erstesSubnetz);
+                Debug.WriteLine("subnetzliste nach post : " + subnetzliste.Count);
             }
         }
+
+        //public ActionResult splitSubnetButton()
+        //{
+            
+        //    Message = "test";
+        //}
+
         public Boolean isValidInput(string NetIdEingabe, string NetzAnteilEingabe)
         {
             //erstprüfung ob die werte tatsächlich inhalt haben
