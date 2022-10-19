@@ -44,22 +44,31 @@ namespace SubnettingCalculator.Pages
             return subnetzliste;
         }
 
-        public void OnPostTeilenButtons(int splitOn)
+        public IActionResult OnPostTeilenButtons(int splitOn)
         {
-            Debug.WriteLine(subnetzliste.Count);
-            Debug.WriteLine(splitOn);
-            List<SubnetzObject> splitList = subnetzliste[splitOn].splitSubnet();
-            subnetzliste.RemoveAt(splitOn);
-            for(int i = 0; i < splitList.Count; i++)
+            //altes netz was geteilt wird wird aus der liste entfernt
+            //neue teilnetze werden in die liste eingefügt, an der stelle wo vorher das entfernte netz lag
+            if (subnetzliste[splitOn].NetzAnteil == "32")
             {
-                subnetzliste.Insert(splitOn + i, splitList[i]);
+                Message = "subnetz kann nicht weiter geteilt werden.";
             }
-            //OnPost();
+            else
+            {
+                List<SubnetzObject> splitList = subnetzliste[splitOn].splitSubnet();
+                subnetzliste.RemoveAt(splitOn);
+                for (int i = 0; i < splitList.Count; i++)
+                {
+                    subnetzliste.Insert(splitOn + i, splitList[i]);
+                }
+            }
+            
+            return Page();
         }
 
-        public void OnPost()
+        public IActionResult OnPost()
         {
             //Ausführung des "Eingabe" buttons
+            subnetzliste.Clear();
             if (isValidInput(NetIdEingabe, NetzAnteilEingabe))
             {
                 //prüfung ob es sich bei der eingabe um valide werte handelt andererseits erfolgt keine ausführung
@@ -67,20 +76,9 @@ namespace SubnettingCalculator.Pages
                 SubnetzObject erstesSubnetz = new();
                 erstesSubnetz.initializeSubnet(NetIdEingabe, NetzAnteilEingabe);
                 subnetzliste.Add(erstesSubnetz);
-                subnetzliste.Add(erstesSubnetz);
-                subnetzliste.Add(erstesSubnetz);
-                subnetzliste.Add(erstesSubnetz);
-                subnetzliste.Add(erstesSubnetz);
-                subnetzliste.Add(erstesSubnetz);
-                Debug.WriteLine("subnetzliste nach post : " + subnetzliste.Count);
             }
+            return Page();
         }
-
-        //public ActionResult splitSubnetButton()
-        //{
-            
-        //    Message = "test";
-        //}
 
         public Boolean isValidInput(string NetIdEingabe, string NetzAnteilEingabe)
         {

@@ -28,20 +28,27 @@ namespace SubnettingCalculator.Pages
 
         public List<SubnetzObject> splitSubnet()
         {
+            //Erstellung der nötigen variablen
             List<SubnetzObject> splitList = new List<SubnetzObject>();
-            SubnetzObject tempSubnetobject = new();
+            SubnetzObject tempSubnetobject1 = new();
+            SubnetzObject tempSubnetobject2 = new();
+
+            //Neu Initialisierung des ersten Teilnetzes
             string netzanteilNew = (int.Parse(this.NetzAnteil) + 1).ToString();
-            tempSubnetobject.initializeSubnet(this.NetID, netzanteilNew);
-            splitList.Add(tempSubnetobject);
-            //tempSubnetobject = null;
+            tempSubnetobject1.initializeSubnet(this.NetID, netzanteilNew);
+            splitList.Add(tempSubnetobject1);
+
+            //Erstellung nötiger variablen zur bearbeitung des 2ten Teilnetzes
             string[] broadcastSplit = splitList[0].Broadcast.Split('.');
             int[] broadcastSplitInt = new int[broadcastSplit.Length];
 
+            //umwandlung in Integer um das subnetz leichter aufzählen zu können
             for(int i = 0; i < broadcastSplit.Length; i++)
             {
                 broadcastSplitInt[i] = Convert.ToInt32(broadcastSplit[i]);
             }
 
+            //aufzählung des subnetzes
             for(int i = 0; i < broadcastSplitInt.Length; i++)
             {
                 if (broadcastSplitInt[3-i] < 255)
@@ -54,17 +61,20 @@ namespace SubnettingCalculator.Pages
                 }
             }
 
+            //umwandlung der integer in string um die neue NetID darzustellen
             string netIdNew = "";
             foreach(int block in broadcastSplitInt)
             {
                 netIdNew += block.ToString() + ".";
             }
-            netIdNew = netIdNew.Substring(0, netIdNew.Length - 1);
-            tempSubnetobject.initializeSubnet(netIdNew, netzanteilNew);
-            splitList.Add(tempSubnetobject);
-            Debug.WriteLine("splitlist in der methode: " + splitList.Count);
-            return splitList;
 
+            //initialisierung des zweiten teilnetzes
+            netIdNew = netIdNew.Substring(0, netIdNew.Length - 1);
+            tempSubnetobject2.initializeSubnet(netIdNew, netzanteilNew);
+            splitList.Add(tempSubnetobject2);
+
+            //rückgabe der liste mit den 2 teilnetzen
+            return splitList;
         }
         public string evaluatelastHost(string broadcast, string NetzAnteil)
         {
@@ -267,9 +277,7 @@ namespace SubnettingCalculator.Pages
         {
             //anzahl hosts = 2^hostbits
             //hostbits = 32 - NetzAnteilDerBits (32 in diesem fall ist die volle länge einer IP)
-            Debug.WriteLine("netzAnteil : " + this.NetzAnteil);
             this.AnzahlHosts = (Math.Pow(2, 32 - Convert.ToInt32(this.NetzAnteil)) - 2).ToString();
-            Debug.WriteLine("hostanzhal : " + this.AnzahlHosts);
             if (Convert.ToInt32(this.AnzahlHosts) < 2)
             {
                 //in dem fall das weniger wie 2 rauskommt handelt es sich um spezielle fälle
