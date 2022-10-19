@@ -6,10 +6,10 @@
 
 <div class="text-start" label="butts">
     <p>Gebe die NetId und Das subnetz ein</p>
-    <form method="post">
+    <form method="post" asp-page-handler="OnPost">
         <input type="text" class="NetIDInput" placeholder="NetID" asp-for="NetIdEingabe"> /
         <input type="text" class="SubnetInput" placeholder="NetzAnteil(bits)" asp-for="NetzAnteilEingabe">
-        <button class="btn_submit" type="submit">Update</button>
+        <button class="btn_submit" type="submit">Update</button>        
     </form>
     <p>@Model.Message</p>
 </div>
