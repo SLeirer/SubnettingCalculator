@@ -170,7 +170,37 @@ namespace SubnettingCalculator.Pages
                 Message = "netID hat nicht genügend hosts für dieses subnetz";
                 return false;
             }
+            //Abfangen von netID's die sich außerhalb des subnetzbereiches befinden
+            int anzahlAchterBits = 0;
+            if(netzAnteilInt >= 8)
+            {
+                anzahlAchterBits = netzAnteilInt / 8;
+            }
 
+            string netIDBinaryString = "";
+            if(anzahlAchterBits < netIdBloackeInteger.Length)
+            {
+                netIDBinaryString = Convert.ToString(netIdBloackeInteger[anzahlAchterBits], 2).PadLeft(8, '0');
+
+                List<int> indexes = new List<int>();
+                for (int i = 0; i < 8; i++)
+                {
+                    if (i > netzAnteilInt)
+                    {
+                        indexes.Add(i);
+                    }
+                }
+
+                foreach (int index in indexes)
+                {
+                    if (netIDBinaryString[index].Equals('1'))
+                    {
+                        Message = "NetID befindet sic außerhalb des subnetzbereiches dieser slash-notation";
+                        return false;
+                    }
+                }
+            }
+            
             return true;
         }
     }
