@@ -28,6 +28,7 @@
                 <th scope="col">Anzahl hosts</th>
                 <th scope="col">NetzAnteil(bit)</th>
                 <th scope="col">Netz teilen</th>
+                <th scope="col">Join</th>
             </tr>
         </tHead>
         <tbody>
@@ -43,6 +44,11 @@
                     <td>
                         <form asp-page-handler="TeilenButtons" method="post" asp-route-splitOn="@i">
                             <button value="@i" type="submit">Teilen</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form asp-page-handler="TeilenButtons" method="post" asp-route-splitOn="@i">
+                            <button value="@i" type="submit">join</button>
                         </form>
                     </td>
                 </tr>

@@ -61,6 +61,9 @@ namespace SubnettingCalculator.Pages
                     subnetzliste.Insert(splitOn + i, splitList[i]);
                 }
             }
+
+            //Debug.WriteLine(subnetzliste[0].abgeleitet.Count());
+            //Debug.WriteLine("");
             
             return Page();
         }
