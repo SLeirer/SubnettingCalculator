@@ -16,7 +16,7 @@ namespace SubnettingCalculator.Pages
         public string NetzAnteil { get; set; }
         public string NetID { get; set; }
 
-        private ArrayList abgeleitetVon = new ArrayList();
+        public List<SubnetzObject> netzChronik = new List<SubnetzObject>();
 
         public SubnetzObject()
         {
@@ -39,9 +39,6 @@ namespace SubnettingCalculator.Pages
             //Neu Initialisierung des ersten Teilnetzes
             string netzanteilNew = (int.Parse(this.NetzAnteil) + 1).ToString();
             tempSubnetobject1.initializeSubnet(this.NetID, netzanteilNew);
-            tempSubnetobject1.abgeleitetVon = this.abgeleitetVon;
-            tempSubnetobject1.abgeleitetVon.Add(this);
-            Debug.WriteLine("count für supernetz:" + this.abgeleitetVon.Count);
             splitList.Add(tempSubnetobject1);
 
             //Erstellung nötiger variablen zur bearbeitung des 2ten Teilnetzes
@@ -78,9 +75,6 @@ namespace SubnettingCalculator.Pages
             //initialisierung des zweiten teilnetzes
             netIdNew = netIdNew.Substring(0, netIdNew.Length - 1);
             tempSubnetobject2.initializeSubnet(netIdNew, netzanteilNew);
-            tempSubnetobject2.abgeleitetVon = this.abgeleitetVon;
-            tempSubnetobject2.abgeleitetVon.Add(this);
-            Debug.WriteLine("count für supernetz:" + this.abgeleitetVon.Count);
             splitList.Add(tempSubnetobject2);
 
             //rückgabe der liste mit den 2 teilnetzen

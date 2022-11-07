@@ -44,26 +44,51 @@ namespace SubnettingCalculator.Pages
             return subnetzliste;
         }
 
-        public IActionResult OnPostTeilenButtons(int splitOn)
+        public IActionResult OnPostTeilenButtons(int splitOnIndex)
         {
             //altes netz was geteilt wird wird aus der liste entfernt
             //neue teilnetze werden in die liste eingefügt, an der stelle wo vorher das entfernte netz lag
-            if (subnetzliste[splitOn].NetzAnteil == "32")
+            if (subnetzliste[splitOnIndex].NetzAnteil == "32")
             {
                 Message = "subnetz kann nicht weiter geteilt werden.";
             }
             else
             {
-                List<SubnetzObject> splitList = subnetzliste[splitOn].splitSubnet();
-                subnetzliste.RemoveAt(splitOn);
+                List<SubnetzObject> splitList = subnetzliste[splitOnIndex].splitSubnet();
+
+                foreach (SubnetzObject teilnetz in splitList)
+                {
+                    foreach(SubnetzObject supernetz in subnetzliste[splitOnIndex].netzChronik)
+                    {
+                        teilnetz.netzChronik.Add(supernetz);
+                    }
+                    teilnetz.netzChronik.Add(subnetzliste[splitOnIndex]);
+                }
+                
+                subnetzliste.RemoveAt(splitOnIndex);
+                
                 for (int i = 0; i < splitList.Count; i++)
                 {
-                    subnetzliste.Insert(splitOn + i, splitList[i]);
+                    subnetzliste.Insert(splitOnIndex + i, splitList[i]);
+                }
+            }            
+            return Page();
+        }
+
+        public IActionResult OnPostJoinButtons(int joinOnIndex)
+        {
+            //Alle teilnetze die auf dem gleichen übergeordneten netz basieren werden entfernt
+            //das übergeordnete netz wird wieder hinzugefügt
+            SubnetzObject superNetz = subnetzliste[joinOnIndex].netzChronik.Last();
+            subnetzliste.Insert(joinOnIndex, superNetz);
+
+            for(int i = subnetzliste.Count-1; i >= 0; i--)
+            {
+                if (subnetzliste[i].netzChronik.Contains(superNetz))
+                {
+                    subnetzliste.RemoveAt(i);
                 }
             }
-
-            //Debug.WriteLine(subnetzliste[0].abgeleitet.Count());
-            //Debug.WriteLine("");
             
             return Page();
         }

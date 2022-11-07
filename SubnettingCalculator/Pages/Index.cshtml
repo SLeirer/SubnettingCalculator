@@ -42,15 +42,17 @@
                     <td>@Model.getList()[i].AnzahlHosts</td>
                     <td>@Model.getList()[i].NetzAnteil</td>
                     <td>
-                        <form asp-page-handler="TeilenButtons" method="post" asp-route-splitOn="@i">
+                        <form asp-page-handler="TeilenButtons" method="post" asp-route-splitOnIndex="@i">
                             <button value="@i" type="submit">Teilen</button>
                         </form>
                     </td>
-                    <td>
-                        <form asp-page-handler="TeilenButtons" method="post" asp-route-splitOn="@i">
-                            <button value="@i" type="submit">join</button>
-                        </form>
-                    </td>
+                    @if(@Model.getList().Count != 1){
+                        <td>
+                            <form asp-page-handler="JoinButtons" method="post" asp-route-joinOnIndex="@i" >
+                                <button value="@i" type="submit">join</button>
+                            </form>
+                        </td>
+                    }
                 </tr>
             } 
         </tbody>
