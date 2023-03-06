@@ -19,10 +19,11 @@ Für das Projekt wurde eine vollständige Projektdokumentation erstellt die ich 
 * Netze lassen sich über dynamisch generierte buttons wieder zusammenfügen.
 
 ### Nachträgliches
-Im nachhineine hätte ich das projekt mit IP's anstatt NetID's zur eingabe erstellt.
-Die eingabe und Errechnung der Subnetzte über die NetID führt zu einem nachliegenden problem wobei die teil-netze nur schwer wieder zusammenzufügen sind.
-Ich habe mich am ende für eine Chronik entschieden wo jedes Teil-netzobject eine Liste enthält von Netzen von denen es abgeleitet wurde.
-Wenn ich es von Anfang an mit IP eingabe erstellt hätte könnte dies auf einfachen weg rechnerisch zurückverfolgt werden.
+Im nachhinein hätte ich das projekt mit IP's anstatt NetID's zur Eingabe erstellt.
+Die Eingabe und Errechnung der Subnetzte über die NetID führt zu einem folgenden Problem wobei die Teil-netze sich nur schwer wieder zusammenzufügen lassen.
+Ich habe mich am ende für eine Chronik entschieden wo jedes Teil-netzobjekt eine Liste enthält von Netzen von denen es abgeleitet wurde,
+und sich Darüber wieder mit zusammenhängenden Teil-netzen zusammenfügen lässt.
+Wenn ich es von Anfang an mit IP eingabe erstellt hätte, könnte dies auf einfachen weg rechnerisch zurückverfolgt werden.
 
 ## Zur projekterstellung genutze software und resourcen
 
