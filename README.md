@@ -4,7 +4,7 @@ MiniMax Algorhytmus anhand TicTacToe Spiel In C++
 [Infos](#infos)  
 [Anleitung](#anleitung)  
 [Nachträgliches](#nachträgliches)  
-[genutzte Software und resourcen](#zur-projekterstellung-genutze-software-und-resourcen)
+[Genutzte Software und resourcen](#zur-projekterstellung-genutze-software-und-resourcen)
 
 ## Infos
 Projekt Aus dem Ende des 2ten Jahres / Anfang 3ten jahres meiner Ausbildung.
