@@ -8,7 +8,7 @@ MiniMax Algorhytmus anhand TicTacToe Spiel In C++
 
 ## Infos
 Projekt Aus dem Ende des 2ten Jahres / Anfang 3ten jahres meiner Ausbildung.
-Es handelt sich Um einene SubnetzRechner.
+Es handelt sich Um einene SubnetzRechner.<br>
 Es lässt sich eine NetID und subnetz eingeben woraus ein netz erstellt wird welches sich variable teilen und zusammenfügen lässt.
 Für das Projekt wurde eine vollständige Projektdokumentation erstellt die ich zu einem späterne Zeitpunkt hinzufügen werde.
 
