@@ -29,3 +29,4 @@ Wenn ich es von Anfang an mit IP eingabe erstellt hätte, könnte dies auf einfa
 
 * Visual Studio community edition 2020.
 * .Net Razor-pages.
+* Subentzberechnungen wurden selber erstellt, aus wissen vermittelt durch die Ausbildung.
